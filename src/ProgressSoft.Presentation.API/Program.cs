@@ -1,6 +1,7 @@
 using ProgressSoft.Application;
 using ProgressSoft.Application.CQRS.Commands.Authentication;
-using ProgressSoft.Application.Utilities;
+using ProgressSoft.Application.CQRS.Queries;
+using ProgressSoft.Application.Utilities.Extensions;
 using ProgressSoft.Domain;
 using ProgressSoft.Infrastructure;
 using ProgressSoft.Presentation.API;
@@ -8,6 +9,7 @@ using ProgressSoft.Presentation.API.Configurations;
 using ProgressSoft.Presentation.API.Middlewares;
 using ProgressSoft.Presentation.API.Models;
 using ProgressSoft.Presentation.API.Routes.Authentication;
+using ProgressSoft.Presentation.API.Routes.BusinessCards;
 
 using RefreshToken = ProgressSoft.Presentation.API.Routes.Authentication.RefreshToken;
 
@@ -96,6 +98,16 @@ app.MapPost("/users/logout", Logout.RegisterRoute)
    .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
    .Produces<ApiResponse<LogoutCommandResult>>(StatusCodes.Status401Unauthorized, "application/json")
    .Accepts<LogoutCommand>("application/json");
+
+#endregion
+
+#region Business Cards
+
+app.MapGet("/business-cards", GetAllBusinessCards.RegisterRoute)
+    .WithTags("BusinessCards")
+    .Produces<ApiResponse<GetAllBusinessCardsQueryResult>>(StatusCodes.Status200OK, "application/json")
+   .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
+   .Produces<ApiResponse<GetAllBusinessCardsQueryResult>>(StatusCodes.Status401Unauthorized, "application/json");
 
 #endregion
 

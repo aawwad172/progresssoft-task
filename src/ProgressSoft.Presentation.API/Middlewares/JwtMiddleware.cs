@@ -1,7 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-
-using ProgressSoft.Application.Services;
 using ProgressSoft.Domain.Exceptions;
 using ProgressSoft.Domain.Interfaces.Application.Services;
 

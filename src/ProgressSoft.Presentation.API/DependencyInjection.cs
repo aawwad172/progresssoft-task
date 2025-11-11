@@ -1,15 +1,16 @@
 using System.Reflection;
 using System.Text;
 
-using ProgressSoft.Application.Utilities;
-using ProgressSoft.Domain.Entities.Authentication;
-using ProgressSoft.Domain.Enums;
-using ProgressSoft.Presentation.API.Validators.Commands.Authentication;
-
 using FluentValidation;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+
+using ProgressSoft.Application.Utilities.Extensions;
+using ProgressSoft.Domain.Entities.Authentication;
+using ProgressSoft.Domain.Enums;
+using ProgressSoft.Presentation.API.Validators.Commands.Authentication;
+using ProgressSoft.Presentation.API.Validators.Queries;
 
 namespace ProgressSoft.Presentation.API;
 
@@ -29,6 +30,8 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
         services.AddValidatorsFromAssemblyContaining<RefreshTokenCommandValidator>();
         services.AddValidatorsFromAssemblyContaining<LogoutCommandValidator>();
+
+        services.AddValidatorsFromAssemblyContaining<GetAllBusinessCardsQueryValidator>();
 
         services.AddHttpContextAccessor();
 

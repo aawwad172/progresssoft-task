@@ -1,17 +1,16 @@
 using System.Reflection;
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
 using ProgressSoft.Domain.Entities;
 using ProgressSoft.Domain.Entities.Authentication;
 using ProgressSoft.Domain.Interfaces.Domain.Auditing;
 using ProgressSoft.Infrastructure.Configurations;
 using ProgressSoft.Infrastructure.Configurations.Seed;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace ProgressSoft.Infrastructure.Persistence;
 
@@ -40,22 +39,17 @@ public class ApplicationDbContext(
         // Apply configurations in specific order
         modelBuilder.ApplyConfiguration(new UserConfiguration());
         modelBuilder.ApplyConfiguration(new UsersSeed(_configuration));
-
         modelBuilder.ApplyConfiguration(new RoleConfiguration());
         modelBuilder.ApplyConfiguration(new RolesSeed());
-
         modelBuilder.ApplyConfiguration(new PermissionConfiguration());
         modelBuilder.ApplyConfiguration(new PermissionsSeed());
-
         // Apply relationship configurations last
         modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
         modelBuilder.ApplyConfiguration(new UsersRolesSeed());
-
         modelBuilder.ApplyConfiguration(new RolePermissionConfiguration());
         modelBuilder.ApplyConfiguration(new RolesPermissionsSeed());
-
         modelBuilder.ApplyConfiguration(new RefreshTokenConfiguration());
-
+        modelBuilder.ApplyConfiguration(new BusinessCardConfiguration());
     }
 
     // _logger service

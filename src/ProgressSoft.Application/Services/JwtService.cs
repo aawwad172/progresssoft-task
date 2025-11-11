@@ -1,8 +1,6 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-
-using ProgressSoft.Application.Utilities;
 using ProgressSoft.Domain.Entities;
 using ProgressSoft.Domain.Entities.Authentication;
 using ProgressSoft.Domain.Exceptions;
@@ -12,6 +10,7 @@ using ProgressSoft.Domain.Interfaces.Infrastructure.IRepositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using ProgressSoft.Application.Utilities.Extensions;
 
 namespace ProgressSoft.Application.Services;
 
