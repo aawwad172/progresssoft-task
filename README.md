@@ -1,4 +1,4 @@
-# Dotnet Template
+# ProgressSoft
 
 This is a .NET template built using Domain-Driven Design (DDD) with Clean Architecture. It is designed to help you quickly set up an application with the following layers and patterns:
 
