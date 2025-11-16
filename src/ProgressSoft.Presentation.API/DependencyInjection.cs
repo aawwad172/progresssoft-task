@@ -10,6 +10,7 @@ using ProgressSoft.Application.Utilities.Extensions;
 using ProgressSoft.Domain.Entities.Authentication;
 using ProgressSoft.Domain.Enums;
 using ProgressSoft.Presentation.API.Validators.Commands.Authentication;
+using ProgressSoft.Presentation.API.Validators.Commands.BusinessCards;
 using ProgressSoft.Presentation.API.Validators.Queries;
 
 namespace ProgressSoft.Presentation.API;
@@ -32,6 +33,9 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining<LogoutCommandValidator>();
 
         services.AddValidatorsFromAssemblyContaining<GetAllBusinessCardsQueryValidator>();
+        services.AddValidatorsFromAssemblyContaining<GetBusinessCardByIdQueryValidator>();
+        services.AddValidatorsFromAssemblyContaining<CreateBusinessCardCommandValidator>();
+
 
         services.AddHttpContextAccessor();
 

@@ -1,8 +1,10 @@
 using ProgressSoft.Application;
 using ProgressSoft.Application.CQRS.Commands.Authentication;
+using ProgressSoft.Application.CQRS.Commands.BusinessCards;
 using ProgressSoft.Application.CQRS.Queries;
 using ProgressSoft.Application.Utilities.Extensions;
 using ProgressSoft.Domain;
+using ProgressSoft.Domain.Constants.Presentation;
 using ProgressSoft.Infrastructure;
 using ProgressSoft.Presentation.API;
 using ProgressSoft.Presentation.API.Configurations;
@@ -70,21 +72,21 @@ app.MapGet("/", () => new
 #region Authentication
 
 app.MapPost("/users/register", RegisterUser.RegisterRoute)
-    .WithTags("Authentication")
+    .WithTags(OpenApiTags.Authentication)
    .Produces<ApiResponse<RegisterUserCommandResult>>(StatusCodes.Status201Created, "application/json")
    .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
    .Produces<ApiResponse<RegisterUserCommandResult>>(StatusCodes.Status409Conflict, "application/json")
    .Accepts<RegisterUserCommand>("application/json");
 
 app.MapPost("/users/login", Login.RegisterRoute)
-    .WithTags("Authentication")
+    .WithTags(OpenApiTags.Authentication)
    .Produces<ApiResponse<LoginCommandResult>>(StatusCodes.Status200OK, "application/json")
    .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
    .Produces<ApiResponse<LoginCommandResult>>(StatusCodes.Status401Unauthorized, "application/json")
    .Accepts<LoginCommand>("application/json");
 
 app.MapPost("/users/refresh-token", RefreshToken.RegisterRoute)
-    .WithTags("Authentication")
+    .WithTags(OpenApiTags.Authentication)
     .RequireAuthorization("UserRead")
    .Produces<ApiResponse<RefreshTokenCommandResult>>(StatusCodes.Status200OK, "application/json")
    .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
@@ -92,7 +94,7 @@ app.MapPost("/users/refresh-token", RefreshToken.RegisterRoute)
    .Accepts<RefreshTokenCommand>("application/json");
 
 app.MapPost("/users/logout", Logout.RegisterRoute)
-    .WithTags("Authentication")
+    .WithTags(OpenApiTags.Authentication)
     .RequireAuthorization("UserRead", "PostApprove")
    .Produces<ApiResponse<LogoutCommandResult>>(StatusCodes.Status200OK, "application/json")
    .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
@@ -104,10 +106,23 @@ app.MapPost("/users/logout", Logout.RegisterRoute)
 #region Business Cards
 
 app.MapGet("/business-cards", GetAllBusinessCards.RegisterRoute)
-    .WithTags("BusinessCards")
+    .WithTags(OpenApiTags.BusinessCards)
     .Produces<ApiResponse<GetAllBusinessCardsQueryResult>>(StatusCodes.Status200OK, "application/json")
    .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
    .Produces<ApiResponse<GetAllBusinessCardsQueryResult>>(StatusCodes.Status401Unauthorized, "application/json");
+
+app.MapGet("/business-cards/{id}", GetBusinessCardById.RegisterRoute)
+    .WithTags(OpenApiTags.BusinessCards)
+    .Produces<ApiResponse<GetBusinessCardByIdQueryResult>>(StatusCodes.Status200OK, "application/json")
+    .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
+    .Produces<ApiResponse<GetBusinessCardByIdQueryResult>>(StatusCodes.Status401Unauthorized, "application/json");
+
+app.MapPost("/business-cards", CreateBusinessCard.RegisterRoute)
+    .WithTags(OpenApiTags.BusinessCards)
+    .Produces<ApiResponse<CreateBusinessCardCommandResult>>(StatusCodes.Status201Created, "application/json")
+    .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
+    .Produces<ApiResponse<CreateBusinessCardCommandResult>>(StatusCodes.Status401Unauthorized, "application/json")
+    .Accepts<CreateBusinessCardCommand>("application/json");
 
 #endregion
 
