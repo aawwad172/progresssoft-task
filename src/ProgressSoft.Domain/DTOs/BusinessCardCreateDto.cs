@@ -9,12 +9,19 @@ namespace ProgressSoft.Domain.DTOs;
 /// used by the API, Parsers, and Application Commands.
 /// It lives in the Domain layer so all other layers can reference it.
 /// </summary>
-public sealed record BusinessCardCreateDto(
-    string Name,
-    string Gender,
-    DateTime DateOfBirth,
-    string Email,
-    string Phone,
-    string Address,
-    string? PhotoBase64
-);
+public sealed class BusinessCardCreateDto
+{
+    public BusinessCardCreateDto()
+    {
+    }
+
+    public required string Name { get; set; }
+    public required string Gender { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public required string Email { get; set; }
+    public required string Phone { get; set; }
+    public required string Address { get; set; }
+    public string? PhotoBase64 { get; set; }
+
+
+}

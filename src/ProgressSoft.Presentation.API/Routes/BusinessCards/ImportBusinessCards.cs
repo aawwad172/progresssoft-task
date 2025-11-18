@@ -35,7 +35,7 @@ public class ImportBusinessCards
         IFileImportRepository.ImportResult parsingResult = await fileImportRepository.ImportAsync(file.FileName, file.OpenReadStream());
 
         if (parsingResult == null || parsingResult.BusinessCards.Count == 0)
-            throw new CustomValidationException("Import failed", ["No records found in file."]);
+            throw new CustomValidationException($"Import failed, Errors: {parsingResult!.Errors}");
 
         // 3. Validate EACH parsed record (post-import validation)
         List<string> allErrors = [];

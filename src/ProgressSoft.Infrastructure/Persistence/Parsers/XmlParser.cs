@@ -12,7 +12,7 @@ public class XmlParser : IXmlParser
     // Method signature is async and returns the standardized ImportResult
     public async Task<IFileImportRepository.ImportResult> ParseAsync(Stream stream)
     {
-        var errors = new List<string>();
+        List<string> errors = [];
         IReadOnlyList<BusinessCardCreateDto> successfulRecords = new List<BusinessCardCreateDto>();
 
         try
