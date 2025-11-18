@@ -1,8 +1,8 @@
-using ProgressSoft.Domain.Exceptions;
-
 using Microsoft.Extensions.Configuration;
 
-namespace ProgressSoft.Application.Utilities;
+using ProgressSoft.Domain.Exceptions;
+
+namespace ProgressSoft.Application.Utilities.Extensions;
 
 public static class ConfigurationExtensions
 {

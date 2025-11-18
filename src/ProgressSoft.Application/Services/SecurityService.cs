@@ -5,6 +5,7 @@ using ProgressSoft.Application.Utilities;
 using ProgressSoft.Domain.Interfaces.Application.Services;
 
 using Microsoft.Extensions.Configuration;
+using ProgressSoft.Application.Utilities.Extensions;
 
 namespace ProgressSoft.Application.Services;
 

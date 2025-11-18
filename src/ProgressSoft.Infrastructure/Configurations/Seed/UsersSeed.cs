@@ -1,9 +1,9 @@
-using ProgressSoft.Application.Utilities;
 using ProgressSoft.Domain.Entities;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Configuration;
+using ProgressSoft.Application.Utilities.Extensions;
 
 namespace ProgressSoft.Infrastructure.Configurations.Seed;
 

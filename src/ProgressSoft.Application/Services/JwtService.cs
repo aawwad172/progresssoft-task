@@ -1,8 +1,6 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-
-using ProgressSoft.Application.Utilities;
 using ProgressSoft.Domain.Entities;
 using ProgressSoft.Domain.Entities.Authentication;
 using ProgressSoft.Domain.Exceptions;
@@ -12,6 +10,7 @@ using ProgressSoft.Domain.Interfaces.Infrastructure.IRepositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+using ProgressSoft.Application.Utilities.Extensions;
 
 namespace ProgressSoft.Application.Services;
 
@@ -33,8 +32,8 @@ public class JwtService(
         List<string> permissions = await _permissionService.GetUserPermissionsAsync(user);
 
         // Use a List<Claim> to dynamically add all claims
-        var claims = new List<Claim>
-        {
+        List<Claim> claims =
+        [
             // Core Identity Claims
             new(JwtRegisteredClaimNames.Name, user.FirstName + " " + user.LastName),
             new(JwtRegisteredClaimNames.NameId, user.Id.ToString()),
@@ -43,10 +42,10 @@ public class JwtService(
             new(JwtRegisteredClaimNames.Jti, Guid.CreateVersion7().ToString()), // Unique Token ID
             // --- ADD SECURITY STAMP CLAIM HERE ---
             new("security_stamp", user.SecurityStamp)
-        };
+        ];
 
         // --- 3. Add Role Claims ---
-        foreach (var role in roles)
+        foreach (string role in roles)
         {
             // Add one claim for each role the user holds
             claims.Add(new Claim(ClaimTypes.Role, role));
@@ -54,7 +53,7 @@ public class JwtService(
 
         // Use the custom claim type defined earlier (CustomClaims.Permission = "application_permission")
         // --- 4. Add Permission Claims (for granular [HasPermission("...")] checks) ---
-        foreach (var permission in permissions)
+        foreach (string permission in permissions)
         {
             // Use the custom claim type defined earlier (e.g., CustomClaims.Permission)
             claims.Add(new Claim(CustomClaims.Permission, permission));

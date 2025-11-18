@@ -12,11 +12,16 @@ public static class QueryableExtensions
     {
         int totalRecords = await query.CountAsync();
 
-        if (pageSize is not null)
-            query = query.Take((int)pageSize);
+        if (pageNumber.HasValue && pageSize.HasValue && pageNumber.Value > 0 && pageSize.Value > 0)
+        {
+            int skipAmount = pageSize.Value * (pageNumber.Value - 1);
 
-        if (pageNumber is not null)
-            query = query.Skip(pageSize ?? 0 * ((int)pageNumber - 1));
+            query = query
+                .Skip(skipAmount)
+                .Take(pageSize.Value);
+        }
+        else if (pageSize.HasValue)
+            query = query.Take(pageSize.Value);
 
         List<T> result = await query.ToListAsync();
 

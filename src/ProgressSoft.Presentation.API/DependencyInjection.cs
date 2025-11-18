@@ -1,15 +1,16 @@
 using System.Reflection;
 using System.Text;
 
-using ProgressSoft.Application.Utilities;
-using ProgressSoft.Domain.Entities.Authentication;
-using ProgressSoft.Domain.Enums;
-using ProgressSoft.Presentation.API.Validators.Commands.Authentication;
-
 using FluentValidation;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+
+using ProgressSoft.Application.CQRS.CommandHandlers.BusinessCards;
+using ProgressSoft.Application.Utilities.Extensions;
+using ProgressSoft.Domain.Entities.Authentication;
+using ProgressSoft.Domain.Enums;
+using ProgressSoft.Presentation.API.Validators.Commands.Authentication;
 
 namespace ProgressSoft.Presentation.API;
 
@@ -22,13 +23,33 @@ public static class DependencyInjection
     /// <returns>The IServiceCollection for chaining.</returns>
     public static IServiceCollection AddPresentation(this IServiceCollection services, IConfiguration configuration)
     {
+        // --- 2. FIX FOR MEDIATR ---
+        // Get the assembly where your HANDLERS are (the Application layer)
+        var applicationAssembly = typeof(ImportBusinessCardsCommandHandler).Assembly;
+
+        // This now correctly scans your Application assembly for handlers
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(applicationAssembly));
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
         // Register FluentValidation validators found in the current assembly.
-        services.AddValidatorsFromAssemblyContaining<RegisterUserCommandValidator>();
-        services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
-        services.AddValidatorsFromAssemblyContaining<RefreshTokenCommandValidator>();
-        services.AddValidatorsFromAssemblyContaining<LogoutCommandValidator>();
+        // services.AddValidatorsFromAssemblyContaining<RegisterUserCommandValidator>();
+        // services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
+        // services.AddValidatorsFromAssemblyContaining<RefreshTokenCommandValidator>();
+        // services.AddValidatorsFromAssemblyContaining<LogoutCommandValidator>();
+
+        // services.AddValidatorsFromAssemblyContaining<GetAllBusinessCardsQueryValidator>();
+        // services.AddValidatorsFromAssemblyContaining<GetBusinessCardByIdQueryValidator>();
+        // services.AddValidatorsFromAssemblyContaining<CreateBusinessCardCommandValidator>();
+        // services.AddValidatorsFromAssemblyContaining<DeleteBusinessCardCommandValidator>();
+        // services.AddValidatorsFromAssemblyContaining<ImportBusinessCardsCommandValidator>();
+
+        // --- 3. FIX FOR VALIDATORS ---
+        // Get the assembly where your VALIDATORS are (the Presentation.API layer)
+        var presentationAssembly = typeof(RegisterUserCommandValidator).Assembly;
+
+        // This scans the Presentation.API assembly ONCE and registers all validators
+        services.AddValidatorsFromAssembly(presentationAssembly);
+
 
         services.AddHttpContextAccessor();
 

@@ -1,7 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-
-using ProgressSoft.Application.Services;
 using ProgressSoft.Domain.Exceptions;
 using ProgressSoft.Domain.Interfaces.Application.Services;
 
@@ -72,7 +70,7 @@ public class JwtMiddleware(
                 try
                 {
                     // Read token without validation to extract claims
-                    var handler = new JwtSecurityTokenHandler();
+                    JwtSecurityTokenHandler handler = new();
                     var jwtToken = handler.ReadJwtToken(token);
 
                     string? userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value
