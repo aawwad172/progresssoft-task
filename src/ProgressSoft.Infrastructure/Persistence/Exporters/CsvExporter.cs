@@ -5,6 +5,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 
 using ProgressSoft.Domain.DTOs;
+using ProgressSoft.Domain.Enums;
 using ProgressSoft.Domain.Interfaces.Infrastructure.IExporters;
 
 namespace ProgressSoft.Infrastructure.Persistence.Exporters;
@@ -12,34 +13,57 @@ namespace ProgressSoft.Infrastructure.Persistence.Exporters;
 /// <summary>
 /// Implements the ICsvExporter interface using the CsvHelper library.
 /// </summary>
-public class CsvExporter : ICsvExporter
+public class CsvExporter : IFileExporter
 {
-    public async Task<byte[]> ExportAsync(IEnumerable<BusinessCardCreateDto> cards)
+    public FileFormatEnum Format => FileFormatEnum.Csv;
+    public string ContentType => "text/csv";
+    public string FileExtension => ".csv";
+
+    public async Task<byte[]> ExportAsync<T>(IEnumerable<T> data)
     {
-        // We write to a MemoryStream instead of a physical file
+        // Pass the specific logic: "Write all records"
+        return await GenerateCsvBytesAsync<T>(async csv =>
+        {
+            await csv.WriteRecordsAsync(data);
+        });
+    }
+
+    public async Task<byte[]> ExportAsync<T>(T data)
+    {
+        // Pass the specific logic: "Write Header -> Next Line -> Write One Record"
+        return await GenerateCsvBytesAsync<T>(async csv =>
+        {
+            // When writing a single record manually, we must trigger the header explicitly
+            csv.WriteHeader<T>();
+            await csv.NextRecordAsync();
+            csv.WriteRecord(data);
+        });
+    }
+
+    // --- PRIVATE HELPER ---
+    // This method handles the "boilerplate": Streams, Writers, Configuration, and Mapping.
+    // It accepts an action (Func) to perform the actual writing operation.
+    private async Task<byte[]> GenerateCsvBytesAsync<T>(Func<CsvWriter, Task> writeAction)
+    {
         using MemoryStream memoryStream = new();
-
-        // Use a StreamWriter to write text (CSV) into the stream
-        // We use UTF-8 to support international characters
         using StreamWriter writer = new(memoryStream, Encoding.UTF8);
-
-        // CsvWriter handles the CSV formatting
         using CsvWriter csv = new(writer, CultureInfo.InvariantCulture);
 
-        // Register the map. This ensures the headers are written correctly
-        // and in the order we specify.
-        csv.Context.RegisterClassMap<BusinessCardMap>();
+        // Shared Logic: Register Map if applicable
+        if (typeof(T) == typeof(BusinessCardCreateDto))
+        {
+            csv.Context.RegisterClassMap<BusinessCardMap>();
+        }
 
-        // Write all records from the DTO list into the stream
-        await csv.WriteRecordsAsync(cards);
+        // Execute the specific writing logic passed from the public methods
+        await writeAction(csv);
 
-        // Flush the writer to ensure all data is pushed to the MemoryStream
+        // Finalize stream
         await writer.FlushAsync();
-
-        // Return the complete byte array from the stream
         return memoryStream.ToArray();
     }
 }
+
 
 /// <summary>
 /// Defines the column headers and order for the exported CSV file.

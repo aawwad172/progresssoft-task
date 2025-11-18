@@ -3,40 +3,35 @@ using Microsoft.Extensions.Logging;
 using ProgressSoft.Application.CQRS.Queries;
 using ProgressSoft.Domain.DTOs;
 using ProgressSoft.Domain.Entities;
+using ProgressSoft.Domain.Exceptions;
 using ProgressSoft.Domain.Interfaces.Application.Services;
 using ProgressSoft.Domain.Interfaces.Infrastructure.IExporters;
 using ProgressSoft.Domain.Interfaces.Infrastructure.IRepositories;
 
 namespace ProgressSoft.Application.CQRS.QueryHandlers;
 
-public class ExportBusinessCardsQueryHandler(
+public class ExportBusinessCardQueryHandler(
     ICurrentUserService currentUserService,
-    ILogger<ExportBusinessCardsQueryHandler> logger,
+    ILogger<ExportBusinessCardQueryHandler> logger,
     IUnitOfWork unitOfWork,
-    IRepository<BusinessCard> businessCardRepository,
-    IExporterFactory exporterFactory)
-    : BaseHandler<ExportBusinessCardsQuery, ExportBusinessCardsQueryResult>(currentUserService, logger, unitOfWork)
+    IExporterFactory exporterFactory,
+    IRepository<BusinessCard> businessCardRepository)
+    : BaseHandler<ExportBusinessCardQuery, ExportBusinessCardQueryResult>(currentUserService, logger, unitOfWork)
 {
     private readonly IRepository<BusinessCard> _businessCardRepository = businessCardRepository;
     private readonly IExporterFactory _exporterFactory = exporterFactory;
-
-    public override async Task<ExportBusinessCardsQueryResult> Handle(ExportBusinessCardsQuery request, CancellationToken cancellationToken)
+    public override async Task<ExportBusinessCardQueryResult> Handle(ExportBusinessCardQuery request, CancellationToken cancellationToken)
     {
         // 1. Fetch ALL data (no pagination, no filter)
-        PaginationResult<BusinessCard> paginationResult = await _businessCardRepository.GetAllAsync(
-            pageNumber: null,
-            pageSize: null,
-            filter: null);
+        var card = await _businessCardRepository.GetByIdAsync(request.Id);
 
-        IEnumerable<BusinessCard>? cards = paginationResult.Page;
-
-        if (cards is null || !cards.Any())
+        if (card is null)
         {
-            throw new Exception("No business cards found to export.");
+            throw new NotFoundException($"No business card with id {request.Id} found to export.");
         }
 
         // 2. Map Entities to DTOs
-        IEnumerable<BusinessCardCreateDto> cardDtos = cards.Select(card => new BusinessCardCreateDto
+        BusinessCardCreateDto cardDto = new()
         {
             Name = card.Name,
             Gender = card.Gender,
@@ -45,17 +40,17 @@ public class ExportBusinessCardsQueryHandler(
             Phone = card.Phone,
             Address = card.Address,
             PhotoBase64 = card.PhotoBase64
-        });
+        };
 
         IFileExporter exporter = _exporterFactory.GetExporter(request.Format);
 
         // 3. Generate Bytes
-        byte[] fileContents = await exporter.ExportAsync(cardDtos);
+        byte[] fileContents = await exporter.ExportAsync(cardDto);
 
         string contentType = exporter.ContentType;
-        string fileName = $"BusinessCards_{exporter.FileExtension}";
+        string fileName = $"BusinessCard_{card.Id}{exporter.FileExtension}";
 
         // 4. Return the file
-        return new ExportBusinessCardsQueryResult(fileContents, contentType, fileName);
+        return new ExportBusinessCardQueryResult(fileContents, contentType, fileName);
     }
 }

@@ -33,7 +33,7 @@ public class CsvParser : ICsvParser
             using StreamReader reader = new(stream, Encoding.UTF8); // Use UTF8 encoding
             using CsvReader csv = new(reader, config);
 
-            await foreach (var record in csv.GetRecordsAsync<BusinessCardCreateDto>())
+            await foreach (BusinessCardCreateDto record in csv.GetRecordsAsync<BusinessCardCreateDto>())
             {
                 records.Add(record);
             }

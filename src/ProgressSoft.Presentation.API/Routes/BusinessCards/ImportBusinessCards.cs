@@ -41,7 +41,7 @@ public class ImportBusinessCards
         List<string> allErrors = [];
         int index = 1;
 
-        foreach (var card in parsingResult.BusinessCards)
+        foreach (BusinessCardCreateDto card in parsingResult.BusinessCards)
         {
             ValidationResult result = await cardValidator.ValidateAsync(card);
             if (!result.IsValid)

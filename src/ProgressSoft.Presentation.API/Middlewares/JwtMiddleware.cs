@@ -71,7 +71,7 @@ public class JwtMiddleware(
                 {
                     // Read token without validation to extract claims
                     JwtSecurityTokenHandler handler = new();
-                    var jwtToken = handler.ReadJwtToken(token);
+                    JwtSecurityToken jwtToken = handler.ReadJwtToken(token);
 
                     string? userId = jwtToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value
                                      ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.NameId)?.Value

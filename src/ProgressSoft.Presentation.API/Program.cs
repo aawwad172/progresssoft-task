@@ -128,7 +128,7 @@ app.MapPost("/business-cards", CreateBusinessCard.RegisterRoute)
 
 // File Import Endpoint
 app.MapPost("/business-cards/import", ImportBusinessCards.RegisterRoute)
-    .WithTags("BusinessCards")
+    .WithTags(OpenApiTags.BusinessCards)
     .Accepts<IFormFile>("multipart/form-data")
     .Produces<ApiResponse<ImportBusinessCardsCommandResult>>(StatusCodes.Status200OK, "application/json")
     .Produces<ApiResponse<string>>(StatusCodes.Status400BadRequest, "application/json")
@@ -142,10 +142,17 @@ app.MapDelete("/business-card/{id}", DeleteBusinessCardById.RegisterRoute)
 
 // Map your new export endpoint
 app.MapGet("/business-cards/export", ExportBusinessCards.RegisterRoute)
-    .WithTags("BusinessCards")
+    .WithTags(OpenApiTags.BusinessCards)
     .Produces(StatusCodes.Status200OK, contentType: "text/csv") // Example for CSV
     .Produces(StatusCodes.Status200OK, contentType: "application/xml") // Example for XML
     .Produces<ApiResponse<string>>(StatusCodes.Status400BadRequest, "application/json");
+
+app.MapGet("/business-cards/export/{id}", ExportBusinessCard.RegisterRoute)
+    .WithTags(OpenApiTags.BusinessCards)
+    .Produces(StatusCodes.Status200OK, contentType: "text/csv") // Example for CSV
+    .Produces(StatusCodes.Status200OK, contentType: "application/xml") // Example for XML
+    .Produces<ApiResponse<string>>(StatusCodes.Status400BadRequest, "application/json");
+
 
 #endregion
 

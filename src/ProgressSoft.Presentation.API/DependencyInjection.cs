@@ -25,7 +25,7 @@ public static class DependencyInjection
     {
         // --- 2. FIX FOR MEDIATR ---
         // Get the assembly where your HANDLERS are (the Application layer)
-        var applicationAssembly = typeof(ImportBusinessCardsCommandHandler).Assembly;
+        Assembly applicationAssembly = typeof(ImportBusinessCardsCommandHandler).Assembly;
 
         // This now correctly scans your Application assembly for handlers
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(applicationAssembly));
@@ -45,7 +45,7 @@ public static class DependencyInjection
 
         // --- 3. FIX FOR VALIDATORS ---
         // Get the assembly where your VALIDATORS are (the Presentation.API layer)
-        var presentationAssembly = typeof(RegisterUserCommandValidator).Assembly;
+        Assembly presentationAssembly = typeof(RegisterUserCommandValidator).Assembly;
 
         // This scans the Presentation.API assembly ONCE and registers all validators
         services.AddValidatorsFromAssembly(presentationAssembly);

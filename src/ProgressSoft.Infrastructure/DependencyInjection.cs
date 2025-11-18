@@ -41,10 +41,14 @@ public static class DependencyInjection
 
         services.AddScoped<ICsvParser, CsvParser>();
         services.AddScoped<IXmlParser, XmlParser>();
-
-        services.AddScoped<ICsvExporter, CsvExporter>();
-        services.AddScoped<IXmlExporter, XmlExporter>();
         services.AddScoped<IQRCodeParser, QrCodeParser>();
+
+        // Step 1: Register CSV implementation as IFileExporter
+        services.AddScoped<IFileExporter, CsvExporter>();
+        // Step 2: Register XML implementation as IFileExporter
+        services.AddScoped<IFileExporter, XmlExporter>();
+
+        services.AddScoped<IExporterFactory, ExporterFactory>();
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddLogging();
