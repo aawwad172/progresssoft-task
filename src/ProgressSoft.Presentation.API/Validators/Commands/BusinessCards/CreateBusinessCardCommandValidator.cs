@@ -14,7 +14,6 @@ public class CreateBusinessCardCommandValidator : AbstractValidator<CreateBusine
 
     // Max length for a string column (matching the EF Core configuration used earlier)
     private const int NameMaxLength = 150;
-    private const int GenderMaxLength = 50;
     private const int PhoneMaxLength = 50;
     private const int AddressMaxLength = 500;
     private const int EmailMaxLength = 256;
@@ -29,9 +28,7 @@ public class CreateBusinessCardCommandValidator : AbstractValidator<CreateBusine
 
         RuleFor(x => x.Gender)
             .NotEmpty()
-            .WithMessage("Gender is required.")
-            .MaximumLength(GenderMaxLength)
-            .WithMessage($"Gender cannot exceed {GenderMaxLength} characters.");
+            .WithMessage("Gender is required.");
 
         RuleFor(x => x.Address)
             .NotEmpty()

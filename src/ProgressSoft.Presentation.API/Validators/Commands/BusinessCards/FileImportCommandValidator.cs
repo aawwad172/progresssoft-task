@@ -1,5 +1,3 @@
-using System;
-
 using FluentValidation;
 
 using ProgressSoft.Presentation.API.Models;

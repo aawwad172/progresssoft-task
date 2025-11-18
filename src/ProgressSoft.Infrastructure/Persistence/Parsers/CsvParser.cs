@@ -33,10 +33,6 @@ public class CsvParser : ICsvParser
             using StreamReader reader = new(stream, Encoding.UTF8); // Use UTF8 encoding
             using CsvReader csv = new(reader, config);
 
-            // NOTE: RegisterClassMap is removed because it's hardcoded to BusinessCardMap. 
-            // CsvHelper will now attempt to auto-map based on property names in T.
-
-            // 2. Use T in GetRecordsAsync
             await foreach (var record in csv.GetRecordsAsync<BusinessCardCreateDto>())
             {
                 records.Add(record);

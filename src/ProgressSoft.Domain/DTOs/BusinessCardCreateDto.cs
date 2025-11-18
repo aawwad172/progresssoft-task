@@ -1,5 +1,3 @@
-using System;
-
 namespace ProgressSoft.Domain.DTOs;
 
 
@@ -15,6 +13,17 @@ public sealed class BusinessCardCreateDto
     {
     }
 
+    public BusinessCardCreateDto(string name, string gender, DateTime dateOfBirth, string email, string phone, string address, string? photoBase64)
+    {
+        Name = name;
+        Gender = gender;
+        DateOfBirth = dateOfBirth;
+        Email = email;
+        Phone = phone;
+        Address = address;
+        PhotoBase64 = photoBase64;
+    }
+
     public required string Name { get; set; }
     public required string Gender { get; set; }
     public DateTime DateOfBirth { get; set; }
@@ -22,6 +31,4 @@ public sealed class BusinessCardCreateDto
     public required string Phone { get; set; }
     public required string Address { get; set; }
     public string? PhotoBase64 { get; set; }
-
-
 }

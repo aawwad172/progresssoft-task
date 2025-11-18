@@ -1,5 +1,3 @@
-using ProgressSoft.Domain.DTOs;
-using ProgressSoft.Domain.Entities;
 using ProgressSoft.Domain.Interfaces.Infrastructure.IRepositories;
 
 namespace ProgressSoft.Domain.Interfaces.Infrastructure.IParsers;

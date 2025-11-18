@@ -104,7 +104,7 @@ public class ApplicationDbContext(
                 .GetMethod(nameof(SetSoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static)!
                 .MakeGenericMethod(entityType.ClrType);
 
-            method.Invoke(null, new object[] { modelBuilder });
+            method.Invoke(null, [modelBuilder]);
         }
     }
 

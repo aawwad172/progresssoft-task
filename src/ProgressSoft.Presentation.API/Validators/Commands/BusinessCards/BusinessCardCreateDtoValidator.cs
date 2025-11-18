@@ -1,5 +1,3 @@
-using System;
-
 using FluentValidation;
 
 using ProgressSoft.Domain.DTOs;

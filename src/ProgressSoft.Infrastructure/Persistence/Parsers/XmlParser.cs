@@ -13,7 +13,7 @@ public class XmlParser : IXmlParser
     public async Task<IFileImportRepository.ImportResult> ParseAsync(Stream stream)
     {
         List<string> errors = [];
-        IReadOnlyList<BusinessCardCreateDto> successfulRecords = new List<BusinessCardCreateDto>();
+        IReadOnlyList<BusinessCardCreateDto> successfulRecords = [];
 
         try
         {
@@ -21,14 +21,14 @@ public class XmlParser : IXmlParser
             stream.Seek(0, SeekOrigin.Begin);
 
             // Use the CONCRETE wrapper class for serialization
-            var serializer = new XmlSerializer(typeof(XmlBusinessCardCollection));
+            XmlSerializer serializer = new(typeof(XmlBusinessCardCollection));
 
-            using var reader = XmlReader.Create(stream, new XmlReaderSettings { Async = true });
+            using XmlReader reader = XmlReader.Create(stream, new XmlReaderSettings { Async = true });
 
             if (serializer.CanDeserialize(reader))
             {
                 // Cast to the CONCRETE wrapper
-                var collection = (XmlBusinessCardCollection?)serializer.Deserialize(reader);
+                XmlBusinessCardCollection? collection = (XmlBusinessCardCollection?)serializer.Deserialize(reader);
 
                 if (collection?.Cards != null && collection.Cards.Any())
                 {
@@ -69,5 +69,5 @@ public class XmlBusinessCardCollection
 {
     // Defines the name of the repeating child element (each business card)
     [XmlElement("Card")]
-    public List<BusinessCardCreateDto> Cards { get; set; } = new List<BusinessCardCreateDto>();
+    public List<BusinessCardCreateDto> Cards { get; set; } = [];
 }

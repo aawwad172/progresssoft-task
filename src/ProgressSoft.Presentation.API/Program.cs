@@ -140,6 +140,14 @@ app.MapDelete("/business-card/{id}", DeleteBusinessCardById.RegisterRoute)
     .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
     .Produces<ApiResponse<CreateBusinessCardCommandResult>>(StatusCodes.Status401Unauthorized, "application/json");
 
+// Map your new export endpoint
+app.MapGet("/business-cards/export", ExportBusinessCards.RegisterRoute)
+    .WithTags("BusinessCards")
+    .Produces(StatusCodes.Status200OK, contentType: "text/csv") // Example for CSV
+    .Produces(StatusCodes.Status200OK, contentType: "application/xml") // Example for XML
+    .Produces<ApiResponse<string>>(StatusCodes.Status400BadRequest, "application/json");
+
+
 #endregion
 
 app.Run();

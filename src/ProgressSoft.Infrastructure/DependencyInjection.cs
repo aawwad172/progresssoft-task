@@ -5,9 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using ProgressSoft.Application.Services;
 using ProgressSoft.Application.Utilities.Extensions;
 using ProgressSoft.Domain.Interfaces.Application.Services;
+using ProgressSoft.Domain.Interfaces.Infrastructure.IExporters;
 using ProgressSoft.Domain.Interfaces.Infrastructure.IParsers;
 using ProgressSoft.Domain.Interfaces.Infrastructure.IRepositories;
 using ProgressSoft.Infrastructure.Persistence;
+using ProgressSoft.Infrastructure.Persistence.Exporters;
 using ProgressSoft.Infrastructure.Persistence.Parsers;
 using ProgressSoft.Infrastructure.Persistence.Repositories;
 
@@ -39,6 +41,10 @@ public static class DependencyInjection
 
         services.AddScoped<ICsvParser, CsvParser>();
         services.AddScoped<IXmlParser, XmlParser>();
+
+        services.AddScoped<ICsvExporter, CsvExporter>();
+        services.AddScoped<IXmlExporter, XmlExporter>();
+
         // services.AddScoped(typeof(IQRCodeParser<>), typeof(QRCodeParser<>));
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

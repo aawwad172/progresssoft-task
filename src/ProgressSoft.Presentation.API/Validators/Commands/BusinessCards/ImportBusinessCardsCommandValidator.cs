@@ -1,7 +1,6 @@
 using FluentValidation;
 
 using ProgressSoft.Application.CQRS.Commands.BusinessCards;
-using ProgressSoft.Domain.DTOs;
 
 namespace ProgressSoft.Presentation.API.Validators.Commands.BusinessCards;
 

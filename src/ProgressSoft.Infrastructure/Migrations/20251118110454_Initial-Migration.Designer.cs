@@ -12,7 +12,7 @@ using ProgressSoft.Infrastructure.Persistence;
 namespace ProgressSoft.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251111083712_Initial-Migration")]
+    [Migration("20251118110454_Initial-Migration")]
     partial class InitialMigration
     {
         /// <inheritdoc />

@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-
 namespace ProgressSoft.Domain.Exceptions;
 
 public class CsvParsingException : Exception

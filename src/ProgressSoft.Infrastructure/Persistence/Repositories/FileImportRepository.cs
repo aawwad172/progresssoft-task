@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-
-using ProgressSoft.Domain.DTOs;
 using ProgressSoft.Domain.Exceptions;
 using ProgressSoft.Domain.Interfaces.Infrastructure.IParsers;
 using ProgressSoft.Domain.Interfaces.Infrastructure.IRepositories;

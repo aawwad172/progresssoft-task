@@ -1,5 +1,3 @@
-using Mapster;
-
 using Microsoft.Extensions.Logging;
 
 using ProgressSoft.Application.CQRS.Commands.BusinessCards;

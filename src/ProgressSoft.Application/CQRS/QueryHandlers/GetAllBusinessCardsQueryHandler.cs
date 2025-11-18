@@ -46,9 +46,9 @@ public class GetAllBusinessCardsQueryHandler(
         }
 
         // 4. Gender Filter (Case-insensitive exact match)
-        if (!string.IsNullOrEmpty(request.Gender))
+        if (request.Gender is not null)
         {
-            filter = filter.And(card => card.Gender.Equals(request.Gender, StringComparison.CurrentCultureIgnoreCase));
+            filter = filter.And(card => card.Gender == request.Gender);
         }
 
         // 5. Email Filter (Case-insensitive partial match)
