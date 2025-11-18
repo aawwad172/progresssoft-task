@@ -147,7 +147,6 @@ app.MapGet("/business-cards/export", ExportBusinessCards.RegisterRoute)
     .Produces(StatusCodes.Status200OK, contentType: "application/xml") // Example for XML
     .Produces<ApiResponse<string>>(StatusCodes.Status400BadRequest, "application/json");
 
-
 #endregion
 
 app.Run();

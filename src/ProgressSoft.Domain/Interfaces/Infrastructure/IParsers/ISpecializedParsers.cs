@@ -5,4 +5,4 @@ public interface ICsvParser : IParser { }
 public interface IXmlParser : IParser
 { }
 
-// public interface IQRCodeParser<T> : IParser { }
+public interface IQRCodeParser : IParser { }

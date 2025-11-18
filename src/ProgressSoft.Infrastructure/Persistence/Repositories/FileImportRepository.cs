@@ -6,12 +6,12 @@ namespace ProgressSoft.Infrastructure.Persistence.Repositories;
 
 public class FileImportRepository(
     ICsvParser csvParser,
-    IXmlParser xmlParser
-    /* IQRCodeParser<T> qrCodeParser */) : IFileImportRepository
+    IXmlParser xmlParser,
+    IQRCodeParser qrCodeParser) : IFileImportRepository
 {
     private readonly ICsvParser _csvParser = csvParser;
     private readonly IXmlParser _xmlParser = xmlParser;
-    // private readonly IQRCodeParser<T> _qrCodeParser = qrCodeParser;
+    private readonly IQRCodeParser _qrCodeParser = qrCodeParser;
 
     public async Task<IFileImportRepository.ImportResult> ImportAsync(string fileName, Stream stream)
     {
@@ -28,7 +28,7 @@ public class FileImportRepository(
             ".csv" => _csvParser,
             ".xml" => _xmlParser,
             // QR codes are typically embedded in image files (png/jpg)
-            // ".png" or ".jpg" or ".jpeg" => _qrCode`Parser,
+            ".png" or ".jpg" or ".jpeg" => _qrCodeParser,
             _ => throw new NotSupportedException($"File type '{extension}' is not supported for business card import.")
         };
 

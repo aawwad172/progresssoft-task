@@ -45,7 +45,7 @@ public class JwtService(
         ];
 
         // --- 3. Add Role Claims ---
-        foreach (var role in roles)
+        foreach (string role in roles)
         {
             // Add one claim for each role the user holds
             claims.Add(new Claim(ClaimTypes.Role, role));
@@ -53,7 +53,7 @@ public class JwtService(
 
         // Use the custom claim type defined earlier (CustomClaims.Permission = "application_permission")
         // --- 4. Add Permission Claims (for granular [HasPermission("...")] checks) ---
-        foreach (var permission in permissions)
+        foreach (string permission in permissions)
         {
             // Use the custom claim type defined earlier (e.g., CustomClaims.Permission)
             claims.Add(new Claim(CustomClaims.Permission, permission));

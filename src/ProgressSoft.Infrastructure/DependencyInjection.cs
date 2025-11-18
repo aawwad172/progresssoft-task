@@ -44,8 +44,7 @@ public static class DependencyInjection
 
         services.AddScoped<ICsvExporter, CsvExporter>();
         services.AddScoped<IXmlExporter, XmlExporter>();
-
-        // services.AddScoped(typeof(IQRCodeParser<>), typeof(QRCodeParser<>));
+        services.AddScoped<IQRCodeParser, QrCodeParser>();
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddLogging();
