@@ -1,148 +1,134 @@
-# ProgressSoft
+# Business Card Management System (Backend)
 
-This is a .NET template built using Domain-Driven Design (DDD) with Clean Architecture. It is designed to help you quickly set up an application with the following layers and patterns:
+This repository contains the backend API for the Business Card Management System. It is built using **.NET 9** and follows **Domain-Driven Design (DDD)** principles with **Clean Architecture**.
 
-- **Domain:** Contains your core business entities and logic.
-- **Application:** Houses use cases, CQRS command and query handlers, and application-specific services.
-- **Infrastructure:** Implements data access, repositories, UnitOfWork, and integration with external services (e.g., Postgres).
-- **Presentation:** Contains the Web API project, middleware (including JWT authentication, exception handling), and front-facing controllers.
+## 🏗️ Architecture & Template
 
-## Features
+This project was scaffolded using the **Ahmad Awwad .NET Clean Architecture Template**. You can find the original template on [GitHub](https://github.com/aawwad172/dotnet-template).
 
-- **Clean Architecture with DDD:**  
-  Organizes your solution into Domain, Application, Infrastructure, and Presentation projects.
-  
-- **Dependency Injection:**  
-  DI is set up for each project, ensuring loose coupling and easier testing.
+The solution is organized into the following layers:
 
-- **CQRS and UnitOfWork:**  
-  Implements the CQRS pattern for separating commands and queries. Also includes a UnitOfWork pattern to manage transactions.
+  - **Domain:** Core business entities (`BusinessCard`), value objects, enums (`Gender`), and repository interfaces.
+  - **Application:** Use cases, CQRS (Command/Query handlers), validators (FluentValidation), and application services (Import/Export logic).
+  - **Infrastructure:** Database context (EF Core), migrations, repository implementations, and file parsers (CSV, XML, QR/Image).
+  - **Presentation:** The Web API, minimal apis, and middlewares.
 
-- **Repository Patterns:**  
-  - A **Generic Repository** is provided for general CRUD operations.
-  - For operations with specific needs, you can create a custom repository by inheriting from the generic repository and overriding the necessary methods.
+### Key Features Inherited from Template
 
-- **JWT Middleware and Service:**  
-  Provides a built-in JWT middleware and a dedicated JWT service for handling authentication and authorization.  
-  **Important:** Make sure to change the variables in your `appsettings.json` (connection string, JWT secret, issuer, audience, and **EncryptionKey**) to match your own configuration.
+  * **CQRS & MediatR:** Separation of read and write operations.
+  * **UnitOfWork:** Transaction management.
+  * **Global Exception Handling:** Centralized middleware for standardized `ApiResponse`.
+  * **Husky:** Pre-commit hooks to ensure code quality.
+  * **Makefile:** Shortcuts for running, building, and database operations.
 
-- **Postgres Integration:**  
-  The template is built on PostgreSQL. Connection strings and related configurations are set up accordingly.
+-----
 
-- **Health Endpoint:**  
-  A health endpoint is available to check both the database connection and server health.
+## ⚠️ Note on Authentication & Authorization
 
-- **Husky for Pre-Commit Hooks:**  
-  Husky is configured to ensure code consistency before committing.  
-  **Note:** Install Husky via `npx` (e.g., `npx husky-init && npm install`) to activate pre-commit hooks for your .NET projects.
+The project includes a fully implemented generic **Authentication and Authorization** system (JWT-based) inherited from the base template.
 
-- **Makefile for .NET CLI Tasks:**  
-  A Makefile is included for managing migrations (using EF Core), updating the database, running, and building the application.  
-  **Note:** The command to update the database has been renamed from `update-database` to `database-update` in the Makefile.
+> **Note:** While the infrastructure for Identity and JWT is present in the codebase, it is **not currently enforced** on the Business Card endpoints for the scope of this specific assignment. The code has been preserved for future scalability but is currently unused.
 
-- **Exception Handling Middleware:**  
-  A global exception handling middleware is provided. Simply throw your exceptions and let the middleware handle them.  
-  In addition, you can use the `ApiResponse` class for consistent and clean API responses.
+-----
 
-- **Fluent Validation:**  
-  This template uses Fluent Validation to handle exceptions and validation in a clean, separated manner. This ensures that your validation logic is decoupled from your controllers and business logic.
+## 🚀 Getting Started
 
-- **Query Extension for Pagination:**  
-  The template includes a query extension that simplifies pagination in your queries.
+### 1\. Prerequisites
 
-## Getting Started
+  * .NET 9 SDK
+  * Docker (for the database)
+  * Make (optional, for running shortcut commands)
 
-1. **Create Repository of this template:**
+### 2\. Database Setup (PostgreSQL)
 
-2. **Install Dependencies:**
+This project uses PostgreSQL. You can run a local instance using the official Docker image.
 
-   - For Husky (pre-commit hooks), run:
-     ```bash
-     npx husky-init && npm install
-     ```
-   - Restore your .NET packages:
-     ```bash
-     dotnet restore
-     ```
-3. **Rename the Project**
+Run the following command to start the database with the default credentials configured in the application (`appsettings.json`):
 
-   - Use the Renaming Script using `Make`
-     ```make
-     make rename-project name="<project_name>"
-     ```
+```bash
+docker run --name progress-soft-db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+```
 
-4. **Update Configuration:**
+  * **Username:** `postgres`
+  * **Password:** `postgres`
+  * **Port:** `5432`
 
-   - Open `appsettings.json` and `appsettings.Development.json`.
-   - Update the following configuration values:
-     - **Connection String:** Set your PostgreSQL connection string.
-       ```json
-       "ConnectionStrings": {
-         "DbConnectionString": "Server=your_server;Database=your_db;User Id=your_user;Password=your_password;"
-       }
-       ```
-     - **JWT Settings:** Update your JWT secret key, issuer, and audience.
-       ```json
-       "Jwt": {
-         "Key": "YourVerySecureSecretKey",
-         "Issuer": "yourdomain.com",
-         "Audience": "yourdomain.com"
-       }
-       ```
-       You can generate a JWT key from this [Website](https://jwtsecret.com/generate)
-       
-     - **Security Settings:**  
-       **Important:** Change the `EncryptionKey` to your own secure key.
-       ```json
-       "Security": {
-         "EncryptionKey": "YourUniqueEncryptionKeyHere",
-         "SystemAdminPassword": "YourSystemAdminPasswordHere"
-       }
-       ```
+### 3\. Applying Migrations
 
-5. **Run the Application:**
+The migration files are already generated and included in the repository. You only need to apply them to your running database instance.
 
-   Use the Makefile to run migrations, update the database, or run the application. For example, to update the database:
-   ```bash
-   make database-update
-   ```
-   And to run the application:
-   ```bash
-   make run
-   ```
+If you have `Make` installed:
 
-## Architecture Overview
+```bash
+make database-update
+```
 
-- **Domain:** Contains entities and business logic.
-- **Application:** Implements CQRS, UnitOfWork, and application services.  
-  The `IJwtService` interface is defined here for token generation/validation.
-- **Infrastructure:** Implements repositories, a generic repository, and data access via EF Core (Postgres).  
-  Uses DI for each component.
-- **Presentation:** Web API project containing middleware (JWT, exception handling) and controllers.
+Or using the .NET CLI:
 
-## Exception Handling & API Responses
+```bash
+dotnet ef database update --project src/ProgressSoft.Infrastructure --startup-project src/ProgressSoft.Presentation.API
+```
 
-- **Exception Handling Middleware:**  
-  Automatically catches exceptions thrown during request processing and formats responses using the `ApiResponse` class.
-  
-- **ApiResponse Class:**  
-  Use this class in your controllers to return standardized responses.
+### 4\. Running the Application
 
-## Pagination
+```bash
+make run
+```
 
-- **Query Extension for Pagination:**  
-  A query extension is available to simplify pagination. Use it in your query handlers to easily implement paging functionality.
+*The API will be available at `https://localhost:7079` (or similar, check console output).*
 
-## Contributions & Feedback
+-----
 
-Contributions, suggestions, and feedback are welcome!  
-If you have any ideas or improvements that could help enhance this template, don't hesitate to contribute or open an issue.
+## 📡 API Documentation
 
-## Conclusion
+The API provides endpoints for managing business cards, including CRUD operations and bulk import/export capabilities.
 
-This template is designed to jumpstart your .NET application development using best practices like DDD, Clean Architecture, DI, UnitOfWork, CQRS, and more. Customize the configuration files, update the connection strings and JWT settings, and extend the provided features to suit your application's needs.
+### 📇 Business Cards CRUD
 
-Happy coding!
+| Method | Endpoint | Description | Request Body / Params |
+| :--- | :--- | :--- | :--- |
+| **GET** | `/api/business-cards` | Retrieve a paginated list of business cards. | `?page=1&pageSize=10` (Optional: Filtering params) |
+| **GET** | `/api/business-cards/{id}` | Get detailed information for a single business card. | Path: `id` (Integer) |
+| **POST** | `/api/business-cards` | Create a new business card manually. | JSON: `{ "name": "...", "gender": "Male", ... }` |
+| **PUT** | `/api/business-cards` | Update an existing business card. | JSON: `{ "id": 1, "name": "...", ... }` |
+| **DELETE** | `/api/business-cards/{id}` | Delete a business card by ID. | Path: `id` (Integer) |
 
-By Ahmad Awwad :)
+### 📂 Bulk Import & Parsing
 
+The system supports importing business cards from various file formats.
+
+| Method | Endpoint | Description | Supported Formats |
+| :--- | :--- | :--- | :--- |
+| **POST** | `/api/businesscards/import` | Upload a file to parse and save business cards. | **CSV** (Standard headers)<br>**XML** (Standard schema)<br>**Image** (QR Code containing vCard data) |
+
+**Note on QR Import:** Uploading an image (`.png`, `.jpg`) containing a QR code will automatically detect the code, parse the vCard data, and save the record to the database.
+
+### 📤 Export Data
+
+Download the database records in standard file formats.
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| **GET** | `/api/business-cards/export` | Download all records as a `.csv` or `.xml` file. |
+
+-----
+
+## 🛠 Configuration
+
+You can adjust the database connection string in `src/ProgressSoft.Presentation.API/appsettings.json`:
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=localhost;Port=5432;Database=ProgressSoftDb;User Id=postgres;Password=postgres;"
+}
+```
+
+-----
+
+## 🤝 Contributions
+
+I would be more than happy to tke notes on both template level and task level despite the result of the (hiring process).
+
+-----
+
+**By Ahmad Awwad :)**
