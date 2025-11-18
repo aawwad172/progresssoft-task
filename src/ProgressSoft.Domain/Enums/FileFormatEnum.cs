@@ -2,6 +2,6 @@ namespace ProgressSoft.Domain.Enums;
 
 public enum FileFormatEnum
 {
-    Csv,
-    Xml
+    Csv = 1,
+    Xml = 2
 }

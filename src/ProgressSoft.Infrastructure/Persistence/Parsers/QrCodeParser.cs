@@ -21,19 +21,19 @@ public class QrCodeParser : IQRCodeParser
             if (stream.CanSeek) stream.Seek(0, SeekOrigin.Begin);
 
             // 2. Load image from stream using ImageSharp (Linux/Docker safe)
-            using var image = await Image.LoadAsync<Rgba32>(stream);
+            using Image<Rgba32> image = await Image.LoadAsync<Rgba32>(stream);
 
             // 3. Setup the Reader
             var reader = new BarcodeReader<Rgba32>();
 
             // 4. Decode
-            var result = reader.Decode(image);
+            ZXing.Result result = reader.Decode(image);
 
             if (result != null && !string.IsNullOrWhiteSpace(result.Text))
             {
                 // 5. Convert the string content to DTO
                 // We assume the QR content is a vCard string or a structured text
-                var dto = ParseVCardTextToDto(result.Text);
+                BusinessCardCreateDto dto = ParseVCardTextToDto(result.Text);
                 records.Add(dto);
             }
             else

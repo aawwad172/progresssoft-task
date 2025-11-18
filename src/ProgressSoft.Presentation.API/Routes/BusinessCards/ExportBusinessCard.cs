@@ -11,12 +11,12 @@ using ProgressSoft.Presentation.API.Interfaces;
 
 namespace ProgressSoft.Presentation.API.Routes.BusinessCards;
 
-public class ExportBusinessCards : IParameterizedQueryRoute<ExportBusinessCardsQuery>
+public class ExportBusinessCard : IParameterizedQueryRoute<ExportBusinessCardQuery>
 {
     public static async Task<IResult> RegisterRoute(
-        [AsParameters] ExportBusinessCardsQuery query,
+        [AsParameters] ExportBusinessCardQuery query,
         [FromServices] IMediator mediator,
-        [FromServices] IValidator<ExportBusinessCardsQuery> validator)
+        [FromServices] IValidator<ExportBusinessCardQuery> validator)
     {
         ValidationResult validationResult = await validator.ValidateAsync(query);
         if (!validationResult.IsValid)
@@ -26,7 +26,7 @@ public class ExportBusinessCards : IParameterizedQueryRoute<ExportBusinessCardsQ
             throw new CustomValidationException("Validation failed", errors);
         }
 
-        ExportBusinessCardsQueryResult result = await mediator.Send(query);
+        ExportBusinessCardQueryResult result = await mediator.Send(query);
 
         return Results.File(
             result.FileContents,

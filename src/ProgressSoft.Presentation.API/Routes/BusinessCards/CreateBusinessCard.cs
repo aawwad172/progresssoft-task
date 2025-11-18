@@ -31,7 +31,7 @@ public class CreateBusinessCard : ICommandRoute<CreateBusinessCardCommand>
             throw new CustomValidationException("Validation failed", errors);
         }
 
-        var result = await mediator.Send(request);
+        CreateBusinessCardCommandResult result = await mediator.Send(request);
 
         return Results.Ok(ApiResponse<CreateBusinessCardCommandResult>.SuccessResponse(result));
     }

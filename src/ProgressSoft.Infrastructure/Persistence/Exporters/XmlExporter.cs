@@ -1,38 +1,62 @@
+using System.Text;
+using System.Xml;
 using System.Xml.Serialization;
 
 using ProgressSoft.Domain.DTOs;
+using ProgressSoft.Domain.Enums;
 using ProgressSoft.Domain.Interfaces.Infrastructure.IExporters;
-using ProgressSoft.Infrastructure.Persistence.Parsers;
 
 namespace ProgressSoft.Infrastructure.Persistence.Exporters;
 
 /// <summary>
 /// Implements the IXmlExporter interface using the .NET XmlSerializer.
 /// </summary>
-public class XmlExporter : IXmlExporter
+public class XmlExporter : IFileExporter
 {
-    public async Task<byte[]> ExportAsync(IEnumerable<BusinessCardCreateDto> cards)
+    public FileFormatEnum Format => FileFormatEnum.Xml;
+    public string ContentType => "application/xml";
+    public string FileExtension => ".xml";
+
+    public async Task<byte[]> ExportAsync<T>(IEnumerable<T> data)
     {
-        // 1. Create the collection object that matches the XML structure
-        // We use the XmlBusinessCardCollection DTO from your Infrastructure layer.
-        XmlBusinessCardCollection collection = new()
-        {
-            Cards = cards.ToList()
-        };
+        // Dynamic Root Name Logic:
+        // If it is a BusinessCard, use "BusinessCards". Otherwise, default to "ArrayOfData".
+        string rootName = typeof(T) == typeof(BusinessCardCreateDto)
+            ? "BusinessCards"
+            : "Data";
 
-        XmlSerializer serializer = new(typeof(XmlBusinessCardCollection));
+        // We convert to List because XmlSerializer handles List<T> better than IEnumerable<T>
+        return await Task.Run(() => SerializeToXml(data.ToList(), rootName));
+    }
 
+    public async Task<byte[]> ExportAsync<T>(T data)
+    {
+        // Dynamic Root Name Logic:
+        // If it is a BusinessCard, use "BusinessCard". Otherwise, default to "Data".
+        string rootName = typeof(T) == typeof(BusinessCardCreateDto)
+            ? "BusinessCard"
+            : "Data";
+
+        return await Task.Run(() => SerializeToXml(data, rootName));
+    }
+
+    // --- PRIVATE GENERIC HELPER ---
+    private byte[] SerializeToXml<TInput>(TInput data, string rootName)
+    {
         using MemoryStream memoryStream = new();
 
-        // 2. Serialize the collection object into the stream.
-        // XmlSerializer does not have a built-in async method,
-        // so we wrap the synchronous call in Task.Run to keep the method async.
-        await Task.Run(() =>
-        {
-            serializer.Serialize(memoryStream, collection);
-        });
+        // Use XmlTextWriter to ensure UTF8 and pretty formatting (Indented)
+        using XmlTextWriter xmlWriter = new(memoryStream, Encoding.UTF8);
+        xmlWriter.Formatting = Formatting.Indented;
 
-        // 3. Return the bytes from the stream
+        // Define the Root Attribute dynamically based on the logic above
+        XmlRootAttribute root = new(rootName);
+
+        // Create the serializer for the specific type TInput (which could be List<T> or T)
+        XmlSerializer serializer = new(typeof(TInput), root);
+
+        serializer.Serialize(xmlWriter, data);
+
         return memoryStream.ToArray();
     }
 }
