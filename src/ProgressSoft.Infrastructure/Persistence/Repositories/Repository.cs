@@ -44,6 +44,11 @@ public class Repository<T> : IRepository<T> where T : class, IEntity
         return result.Entity;
     }
 
+    public async Task AddBulkAsync(List<T> entities)
+    {
+        await _dbSet.AddRangeAsync(entities);
+    }
+
     /// <summary>
     /// Deletes an entity by its id.
     /// If the entity is not found, nothing happens.

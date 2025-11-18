@@ -48,11 +48,13 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.UseHttpsRedirection();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProgressSoft API v1");
     c.DocumentTitle = "ProgressSoft API";
+    c.DisplayRequestDuration();
 });
 app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseMiddleware<JwtMiddleware>();
@@ -123,6 +125,20 @@ app.MapPost("/business-cards", CreateBusinessCard.RegisterRoute)
     .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
     .Produces<ApiResponse<CreateBusinessCardCommandResult>>(StatusCodes.Status401Unauthorized, "application/json")
     .Accepts<CreateBusinessCardCommand>("application/json");
+
+// File Import Endpoint
+app.MapPost("/business-cards/import", ImportBusinessCards.RegisterRoute)
+    .WithTags("BusinessCards")
+    .Accepts<IFormFile>("multipart/form-data")
+    .Produces<ApiResponse<ImportBusinessCardsCommandResult>>(StatusCodes.Status200OK, "application/json")
+    .Produces<ApiResponse<string>>(StatusCodes.Status400BadRequest, "application/json")
+    .DisableAntiforgery();
+
+app.MapDelete("/business-card/{id}", DeleteBusinessCardById.RegisterRoute)
+    .WithTags(OpenApiTags.BusinessCards)
+    .Produces<ApiResponse<DeleteBusinessCardCommandResult>>(StatusCodes.Status200OK, "application/json")
+    .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
+    .Produces<ApiResponse<CreateBusinessCardCommandResult>>(StatusCodes.Status401Unauthorized, "application/json");
 
 #endregion
 

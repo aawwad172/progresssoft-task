@@ -35,6 +35,8 @@ public static class DependencyInjection
         services.AddValidatorsFromAssemblyContaining<GetAllBusinessCardsQueryValidator>();
         services.AddValidatorsFromAssemblyContaining<GetBusinessCardByIdQueryValidator>();
         services.AddValidatorsFromAssemblyContaining<CreateBusinessCardCommandValidator>();
+        services.AddValidatorsFromAssemblyContaining<DeleteBusinessCardCommandValidator>();
+        services.AddValidatorsFromAssemblyContaining<ImportBusinessCardsCommandValidator>();
 
 
         services.AddHttpContextAccessor();

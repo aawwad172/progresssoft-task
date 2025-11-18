@@ -1,13 +1,15 @@
-﻿using ProgressSoft.Application.Services;
-using ProgressSoft.Domain.Interfaces.Application.Services;
-using ProgressSoft.Domain.Interfaces.Infrastructure.IRepositories;
-using ProgressSoft.Infrastructure.Persistence;
-using ProgressSoft.Infrastructure.Persistence.Repositories;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
+using ProgressSoft.Application.Services;
 using ProgressSoft.Application.Utilities.Extensions;
+using ProgressSoft.Domain.Interfaces.Application.Services;
+using ProgressSoft.Domain.Interfaces.Infrastructure.IParsers;
+using ProgressSoft.Domain.Interfaces.Infrastructure.IRepositories;
+using ProgressSoft.Infrastructure.Persistence;
+using ProgressSoft.Infrastructure.Persistence.Parsers;
+using ProgressSoft.Infrastructure.Persistence.Repositories;
 
 namespace ProgressSoft.Infrastructure;
 
@@ -32,6 +34,13 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
+
+        services.AddScoped<IFileImportRepository, FileImportRepository>();
+
+        services.AddScoped<ICsvParser, CsvParser>();
+        services.AddScoped<IXmlParser, XmlParser>();
+        // services.AddScoped(typeof(IQRCodeParser<>), typeof(QRCodeParser<>));
+
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddLogging();
 

@@ -12,7 +12,7 @@ public static class ExpressionExtensions
         ParameterExpression parameter = left.Parameters[0];
 
         // 2. Replace the parameter in the right body to match the left
-        ParameterReplaceVisitor visitor = new ParameterReplaceVisitor(right.Parameters[0], parameter);
+        ParameterReplaceVisitor visitor = new(right.Parameters[0], parameter);
         Expression rightBody = visitor.Visit(right.Body);
 
         // 3. Combine the bodies with an AND expression
