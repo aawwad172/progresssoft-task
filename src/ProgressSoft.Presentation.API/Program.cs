@@ -33,6 +33,23 @@ builder.Services.AddDomain()
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
+// 1. Retrieve the allowed origins from configuration
+var allowedOrigins = builder.Configuration.GetSection("CorsSettings:AllowedOrigins").Get<string[]>();
+
+var myAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myAllowSpecificOrigins,
+        policy =>
+        {
+            // 2. Use the variable here
+            policy.WithOrigins(allowedOrigins!)
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
 WebApplication app = builder.Build();
 
 // Map health check endpoint
@@ -48,7 +65,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
 app.UseAuthentication();
 app.UseAuthorization();
 
-
+app.UseCors(myAllowSpecificOrigins);
 app.UseHttpsRedirection();
 app.UseSwaggerUI(c =>
 {
@@ -134,7 +151,7 @@ app.MapPost("/business-cards/import", ImportBusinessCards.RegisterRoute)
     .Produces<ApiResponse<string>>(StatusCodes.Status400BadRequest, "application/json")
     .DisableAntiforgery();
 
-app.MapDelete("/business-card/{id}", DeleteBusinessCardById.RegisterRoute)
+app.MapDelete("/business-cards/{id}", DeleteBusinessCardById.RegisterRoute)
     .WithTags(OpenApiTags.BusinessCards)
     .Produces<ApiResponse<DeleteBusinessCardCommandResult>>(StatusCodes.Status200OK, "application/json")
     .Produces<ApiResponse<IEnumerable<string>>>(StatusCodes.Status400BadRequest, "application/json")
